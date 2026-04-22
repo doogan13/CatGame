@@ -30,7 +30,8 @@ jobs:
 
       - name: Install butler
         run: |
-          curl -L -o butler https://github.com/itchio/butler/releases/latest/download/butler-linux-amd64
+          BUTLER_URL=$(curl -sL https://api.github.com/repos/itchio/butler/releases/latest | grep "browser_download_url" | grep "linux-amd64" | grep -v "sha256" | cut -d'"' -f4)
+          curl -L -o butler "$BUTLER_URL"
           chmod +x butler
 
       - name: Push to itch.io
