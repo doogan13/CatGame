@@ -2,6 +2,8 @@ import { state } from './state.js';
 import { UPS } from './constants.js';
 import { boostMax } from './upgrades.js';
 import { drawOrange, drawGray } from './draw/drawCat.js';
+import { saveScore, renderLeaderboard, getPlayerName, savePlayerName } from './leaderboard.js';
+import { unlockHelmet } from './unlocks.js';
 
 export function setMsg(t) {
   document.getElementById('msg').textContent = t;
@@ -34,7 +36,7 @@ export function updBoosts() {
   for (let i = 0; i < boostMax(); i++) {
     const d = document.createElement('div');
     d.className = 'bp' + (i < state.boostLeft ? ' on' : '');
-    d.textContent = 'TURBO';
+    d.textContent = '⚡';
     bar.appendChild(d);
   }
 }
@@ -43,9 +45,26 @@ const doneBtn = document.getElementById('done-btn');
 const doneDist = document.getElementById('done-dist');
 
 export function showDoneBtn() {
-  doneDist.textContent = state.runDist + ' ft' + (state.runDist >= state.best ? ' 🏆 New Best!' : '');
+  saveScore(state.runDist, state.catType);
+  if (state.runDist >= 5000 && unlockHelmet(state.catType)) {
+    const el = document.getElementById('event-msg');
+    el.textContent = 'Space Helmet Unlocked!';
+    el.style.color = '#FFD700';
+    el.style.opacity = '1';
+    setTimeout(() => el.style.opacity = '0', 5000);
+  }
+  doneDist.textContent = state.runDist + ' ft' + (state.runDist >= state.best ? '  New Best!' : '');
   doneBtn.style.display = 'flex';
   requestAnimationFrame(() => requestAnimationFrame(() => doneBtn.classList.add('show')));
+}
+
+export function openLeaderboard() {
+  renderLeaderboard(state.runDist);
+  document.getElementById('leaderboard').style.display = 'flex';
+}
+
+export function closeLeaderboard() {
+  document.getElementById('leaderboard').style.display = 'none';
 }
 
 export function hideDoneBtn() {
@@ -93,6 +112,41 @@ export function pickCat(type, beginRunFn) {
   document.getElementById('sel').style.display = 'none';
   if (state.selMode === 'swap') beginRunFn();
   else openShop();
+}
+
+export function initNewGameBtn() {
+  const btn = document.getElementById('new-game-btn');
+  let confirming = false;
+  let timer = null;
+  btn.addEventListener('click', () => {
+    if (!confirming) {
+      confirming = true;
+      btn.textContent = 'Confirm Reset?';
+      btn.classList.add('confirm');
+      timer = setTimeout(() => {
+        confirming = false;
+        btn.textContent = 'New Game';
+        btn.classList.remove('confirm');
+      }, 3000);
+    } else {
+      clearTimeout(timer);
+      confirming = false;
+      btn.textContent = 'New Game';
+      btn.classList.remove('confirm');
+      state.coins = 0;
+      state.best = 0;
+      UPS.forEach(u => u.val = 0);
+      localStorage.removeItem('catgame_helmet_orange');
+      localStorage.removeItem('catgame_helmet_gray');
+      updHUD();
+    }
+  });
+}
+
+export function initNameInput() {
+  const input = document.getElementById('name-input');
+  input.value = getPlayerName();
+  input.addEventListener('input', () => savePlayerName(input.value));
 }
 
 export function renderCatPreviews() {

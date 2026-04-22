@@ -77,9 +77,16 @@ export function drawItems(ct) {
     } else if (it.type === 'mouse') {
       drawMouse(ct, sx, sy, itemT + it.bob * 1000);
     } else if (it.type === 'spring') {
-      ct.fillStyle = '#2090D8'; ct.beginPath(); ct.roundRect(sx - 13, sy - 11, 26, 22, 6); ct.fill();
-      ct.strokeStyle = '#fff'; ct.lineWidth = 3; ct.lineCap = 'round';
-      ct.beginPath(); ct.moveTo(sx - 7, sy + 5); ct.lineTo(sx, sy - 6); ct.lineTo(sx + 7, sy + 5); ct.stroke();
+      ct.save(); ct.translate(sx, sy);
+      ct.fillStyle = '#E8909A'; ct.beginPath(); ct.ellipse(0, 3, 18, 11, 0, 0, Math.PI * 2); ct.fill();
+      ct.strokeStyle = '#B85868'; ct.lineWidth = 1.5; ct.stroke();
+      ct.fillStyle = '#F4B8C0'; ct.beginPath(); ct.ellipse(-2, -1, 12, 7, -0.15, 0, Math.PI * 2); ct.fill();
+      ct.fillStyle = '#D07888'; ct.beginPath(); ct.ellipse(17, 4, 5, 3, 0.3, 0, Math.PI * 2); ct.fill();
+      ct.strokeStyle = '#B05060'; ct.lineWidth = 1; ct.stroke();
+      ct.strokeStyle = 'rgba(160,70,80,0.45)'; ct.lineWidth = 1.2; ct.lineCap = 'round';
+      ct.beginPath(); ct.moveTo(-10, 8); ct.quadraticCurveTo(0, 6, 9, 9); ct.stroke();
+      ct.beginPath(); ct.moveTo(-7, 12); ct.quadraticCurveTo(1, 10, 8, 13); ct.stroke();
+      ct.restore();
     } else if (it.type === 'poop') {
       drawPoop(ct, sx, it.wy);
     }

@@ -1,7 +1,8 @@
 import { state } from './state.js';
-import { FL, RAMP_BASE_X, W } from './constants.js';
+import { FL, RAMP_BASE_X, W, ZONES } from './constants.js';
 import { glide, bounceR, magR, catR } from './upgrades.js';
 import { checkZone } from './colors.js';
+import { applyEvent, showEventMsg } from './events.js';
 
 export function burst(wx, wy, col, n, pw) {
   for (let i = 0; i < n; i++) {
@@ -25,14 +26,52 @@ export function addTrail() {
   if (state.trails.length > 30) state.trails.shift();
 }
 
+function applyZoneHazards(burst) {
+  if (state.gameState !== 'flying') return;
+  state.zoneHazardT++;
+  const zType = ZONES[state.currentZone]?.type;
+
+  if (zType === 'desert' && state.zoneHazardT % 200 === 0 && Math.random() < 0.65) {
+    state.pvy -= 4 + Math.random() * 2;
+    burst(state.px, state.py, '#FF9900', 6, 2);
+    showEventMsg('Hot Air!', true);
+  }
+  if (zType === 'arctic' && state.onGround) {
+    state.pvx += 0.14;
+  }
+  if (zType === 'night' && state.zoneHazardT % 230 === 0 && Math.random() < 0.55) {
+    state.pvx += 3 + Math.random() * 2;
+    burst(state.px, state.py, '#FFFFC0', 8, 3);
+    showEventMsg('Shooting Star!', true);
+  }
+  if (zType === 'storm' && state.zoneHazardT % 160 === 0) {
+    state.pvx += (Math.random() - 0.35) * 5;
+    state.pvy -= Math.random() * 2;
+    burst(state.px, state.py, '#FFFF80', 6, 2.5);
+    showEventMsg('Lightning!', Math.random() < 0.5);
+  }
+}
+
 // updHUD and showDoneBtn are passed as callbacks to avoid circular imports
 export function physics(updHUD, showDoneBtn) {
   if (state.gameState !== 'flying') return;
 
+  applyEvent();
+  applyZoneHazards(burst);
+
   state.pvx += state.windX * 0.4;
   state.px += state.pvx;
   state.py += state.pvy;
-  state.pvy += 0.31;
+
+  const zType = ZONES[state.currentZone]?.type;
+  let grav = zType === 'space' ? 0.16 : 0.31;
+  if (state.gliderT > 0) {
+    const fade = Math.min(1, state.gliderT / 90);
+    grav -= fade * 0.22;
+    state.gliderT--;
+    if (state.gliderT === 0) burst(state.px, state.py, '#A0D8FF', 14, 4);
+  }
+  state.pvy += grav;
   state.pvx *= glide();
   if (Math.abs(state.pvx) > 22) state.pvx *= 0.975;
 

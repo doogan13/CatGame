@@ -21,6 +21,10 @@ export const state = {
   boostLeft: 0,
   boostFlash: 0,
   displaySpeed: 0,
+  gliderT: 0,
+  nextEventT: 240,
+  eventActive: null,
+  zoneHazardT: 0,
 
   // collections
   items: [],

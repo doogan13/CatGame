@@ -1,7 +1,7 @@
 import { state } from './state.js';
 import { GAME_W, GAME_H, ZONES } from './constants.js';
 import { hexToRgb } from './colors.js';
-import { initShop, renderCatPreviews } from './ui.js';
+import { initShop, renderCatPreviews, initNameInput, initNewGameBtn } from './ui.js';
 import { beginRun } from './loop.js';
 import { initInput } from './input.js';
 
@@ -29,6 +29,8 @@ state.curHor = hexToRgb(ZONES[0].hor);
 
 // Wire shop "Launch!" button — passes beginRun to avoid ui.js → loop.js circular import
 initShop(beginRun);
+initNameInput();
+initNewGameBtn();
 
 // Attach all input event listeners
 initInput();

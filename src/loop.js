@@ -1,12 +1,14 @@
 import { state } from './state.js';
 import { RAMP_MIN, RAMP_MAX, RAMP_SPEED, POW_SPEED, FL, W, H, RAMP_BASE_X } from './constants.js';
 import { ZONES } from './constants.js';
-import { maxPow, boostMax, catR } from './upgrades.js';
+import { maxPow, boostMax, catR, gliderTime } from './upgrades.js';
+import { tickEvents } from './events.js';
 import { hexToRgb } from './colors.js';
 import { physics, burst } from './physics.js';
 import { mkItems } from './entities.js';
 import { setMsg, updHUD, updBoosts, showDoneBtn, hideDoneBtn } from './ui.js';
-import { drawCat } from './draw/drawCat.js';
+import { drawCat, drawHelmet } from './draw/drawCat.js';
+import { helmetUnlocked } from './unlocks.js';
 import { drawBG, drawGround } from './draw/drawWorld.js';
 import { drawRamp, drawRocketSled, drawAimUI, getSledPos, getRampTip } from './draw/drawRamp.js';
 import { drawTrail } from './draw/drawEffects.js';
@@ -41,6 +43,9 @@ export function beginRun() {
   state.curGnd = hexToRgb(ZONES[0].gnd);
   state.curHor = hexToRgb(ZONES[0].hor);
   state.boostLeft = boostMax();
+  state.nextEventT = 180 + Math.floor(Math.random() * 120);
+  state.eventActive = null;
+  state.zoneHazardT = 0;
   mkItems();
   setMsg('Click To Lock Angle');
   updBoosts();
@@ -86,6 +91,7 @@ export function loop() {
         state.pvy = -Math.sin(state.rampAngle) * power;
         state.gameState = 'flying';
         state.onGround = false;
+        state.gliderT = gliderTime();
         burst(tip.x, tip.y, '#FFE040', 28, 8);
         burst(tip.x, tip.y, '#FF6000', 16, 6);
         setMsg('Click To Boost · Space To Ground Smash!');
@@ -96,6 +102,7 @@ export function loop() {
     }
   }
 
+  tickEvents();
   physics(updHUD, showDoneBtn);
 
   ct.clearRect(0, 0, W, H);
@@ -124,10 +131,21 @@ export function loop() {
     ct.save();
     ct.translate(state.px - state.smoothCamX, state.py);
     ct.rotate(va * 0.18);
+    if (state.gliderT > 0) {
+      const alpha = Math.min(1, state.gliderT / 40) * 0.88;
+      ct.globalAlpha = alpha;
+      ct.fillStyle = '#C8E8FF';
+      ct.strokeStyle = '#70B0E0';
+      ct.lineWidth = 1.5;
+      ct.beginPath(); ct.moveTo(-8, -4); ct.bezierCurveTo(-28, -22, -64, -14, -70, 2); ct.bezierCurveTo(-56, 10, -22, 4, -8, 8); ct.closePath(); ct.fill(); ct.stroke();
+      ct.beginPath(); ct.moveTo(8, -4); ct.bezierCurveTo(28, -22, 64, -14, 70, 2); ct.bezierCurveTo(56, 10, 22, 4, 8, 8); ct.closePath(); ct.fill(); ct.stroke();
+      ct.globalAlpha = 1;
+    }
     drawCat(ct, 0, 0, state.catType,
       state.catType === 'orange' ? 0.9 : 0.68,
       state.pvx > 0.1 ? 1 : -1,
       state.blinkT % 130 < 4);
+    if (helmetUnlocked(state.catType)) drawHelmet(ct, state.catType);
     ct.restore();
   }
 

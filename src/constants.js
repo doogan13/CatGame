@@ -20,7 +20,10 @@ export const ZONES = [
   { ft:2000, name:'Night Sky',   sky:'#0C1428', hor:'#182040', gnd:'#182840', type:'night'  },
   { ft:3000, name:'Storm',       sky:'#3C4450', hor:'#485058', gnd:'#384040', type:'storm'  },
   { ft:4000, name:'Space',       sky:'#080812', hor:'#100820', gnd:'#181020', type:'space'  },
-  { ft:5000, name:'Deep Space',  sky:'#040408', hor:'#080414', gnd:'#100C18', type:'space'  },
+  { ft:5000, name:'Deep Space',      sky:'#040408', hor:'#080414', gnd:'#100C18', type:'space'  },
+  { ft:6000, name:'Alien Territory', sky:'#060A08', hor:'#0A1208', gnd:'#060A06', type:'alien'  },
+  { ft:7500, name:'UFO Belt',        sky:'#050508', hor:'#08060C', gnd:'#050408', type:'ufo'    },
+  { ft:9000, name:'Planet Field',    sky:'#030306', hor:'#060310', gnd:'#050208', type:'planet'  },
 ];
 
 export const CLOUDS = Array.from({ length: 6 }, (_, i) => ({
@@ -39,9 +42,10 @@ export const STARS = Array.from({ length: 80 }, (_, i) => ({
 
 // UPS vals are mutated in-place by shop purchases
 export const UPS = [
-  { id:'pow', name:'Rocket Fuel',  desc:'Bigger thrust',       costs:[80,160,320,600], val:0, max:4 },
-  { id:'bnc', name:'Bounce',       desc:'Keep more speed',     costs:[60,130,280,500], val:0, max:4 },
-  { id:'bst', name:'Air Boosts',   desc:'More boost charges',  costs:[70,150,300],     val:0, max:3 },
-  { id:'gli', name:'Aerodynamics', desc:'Less air resistance', costs:[100,220,420],    val:0, max:3 },
-  { id:'mag', name:'Magnet',       desc:'Attract coins',       costs:[90,200],         val:0, max:2 },
+  { id:'pow', name:'Rocket Fuel',  desc:'Bigger thrust',       costs:[80,160,480,900], val:0, max:4 },
+  { id:'bnc', name:'Bounce',       desc:'Keep more speed',     costs:[60,130,420,750], val:0, max:4 },
+  { id:'bst', name:'Air Boosts',   desc:'More boost charges',  costs:[70,220,450],     val:0, max:3 },
+  { id:'gli', name:'Aerodynamics', desc:'Less air resistance', costs:[100,320,630],    val:0, max:3 },
+  { id:'mag', name:'Magnet',       desc:'Attract coins',       costs:[90,300],         val:0, max:2 },
+  { id:'gld', name:'Glider',       desc:'Float on launch',     costs:[150,350,650],    val:0, max:3 },
 ];

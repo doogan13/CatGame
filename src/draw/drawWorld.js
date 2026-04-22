@@ -93,6 +93,74 @@ export function drawBG(ct) {
     ct.beginPath(); ct.ellipse(560, 75, 58, 13, -0.28, 0, Math.PI * 2); ct.stroke();
   }
 
+  if (z.type === 'alien') {
+    STARS.forEach(s => {
+      const bri = 0.2 + Math.sin(state.blinkT * 0.025 + s.phase) * 0.15;
+      ct.fillStyle = `rgba(140,255,140,${bri})`; ct.beginPath(); ct.arc(s.x, s.y, s.r, 0, Math.PI * 2); ct.fill();
+    });
+    [[80, 70, 38], [280, 100, 32], [500, 55, 42], [620, 130, 28]].forEach(([bx, by, sz]) => {
+      const ox = ((bx - state.smoothCamX * 0.07) % (W + 160) + W + 160) % (W + 160) - 80;
+      const bob = Math.sin(state.blinkT * 0.018 + bx) * 5;
+      const sy = by + bob;
+      ct.fillStyle = '#2A6A2A'; ct.beginPath(); ct.ellipse(ox, sy, sz, sz * 1.35, 0, 0, Math.PI * 2); ct.fill();
+      ct.fillStyle = '#40A040'; ct.beginPath(); ct.ellipse(ox, sy, sz * 0.85, sz * 1.2, 0, 0, Math.PI * 2); ct.fill();
+      ct.fillStyle = 'rgba(80,200,80,0.18)'; ct.beginPath(); ct.ellipse(ox, sy, sz * 1.3, sz * 1.7, 0, 0, Math.PI * 2); ct.fill();
+      ct.fillStyle = '#050805'; ct.beginPath(); ct.ellipse(ox - sz * 0.32, sy - sz * 0.05, sz * 0.32, sz * 0.22, -0.3, 0, Math.PI * 2); ct.fill();
+      ct.beginPath(); ct.ellipse(ox + sz * 0.32, sy - sz * 0.05, sz * 0.32, sz * 0.22, 0.3, 0, Math.PI * 2); ct.fill();
+      ct.fillStyle = 'rgba(120,255,120,0.35)'; ct.beginPath(); ct.ellipse(ox - sz * 0.28, sy - sz * 0.1, sz * 0.1, sz * 0.08, 0, 0, Math.PI * 2); ct.fill();
+      ct.beginPath(); ct.ellipse(ox + sz * 0.36, sy - sz * 0.1, sz * 0.1, sz * 0.08, 0, 0, Math.PI * 2); ct.fill();
+      ct.fillStyle = '#1A3A1A'; ct.beginPath(); ct.ellipse(ox, sy + sz * 0.6, sz * 0.4, sz * 0.18, 0, 0, Math.PI * 2); ct.fill();
+    });
+  }
+
+  if (z.type === 'ufo') {
+    STARS.forEach(s => {
+      const bri = 0.15 + Math.sin(state.blinkT * 0.02 + s.phase) * 0.12;
+      ct.fillStyle = `rgba(200,200,255,${bri})`; ct.beginPath(); ct.arc(s.x, s.y, s.r, 0, Math.PI * 2); ct.fill();
+    });
+    [[70, 55], [290, 85], [480, 45], [610, 100]].forEach(([bx, by]) => {
+      const ox = ((bx - state.smoothCamX * 0.08) % (W + 200) + W + 200) % (W + 200) - 100;
+      const bob = Math.sin(state.blinkT * 0.016 + bx * 0.01) * 7;
+      const sy = by + bob;
+      const beamAlpha = 0.06 + Math.sin(state.blinkT * 0.04 + bx) * 0.03;
+      ct.fillStyle = `rgba(100,255,100,${beamAlpha})`;
+      ct.beginPath(); ct.moveTo(ox - 14, sy + 12); ct.lineTo(ox - 50, FL); ct.lineTo(ox + 50, FL); ct.lineTo(ox + 14, sy + 12); ct.closePath(); ct.fill();
+      ct.fillStyle = '#606070'; ct.beginPath(); ct.ellipse(ox, sy + 6, 42, 11, 0, 0, Math.PI * 2); ct.fill();
+      ct.fillStyle = '#909098'; ct.beginPath(); ct.ellipse(ox, sy + 4, 38, 9, 0, 0, Math.PI * 2); ct.fill();
+      ct.fillStyle = '#50A050'; ct.beginPath(); ct.ellipse(ox, sy - 7, 19, 14, 0, Math.PI, Math.PI * 2); ct.fill();
+      ct.fillStyle = 'rgba(160,255,160,0.35)'; ct.beginPath(); ct.ellipse(ox - 5, sy - 10, 7, 5, -0.3, 0, Math.PI * 2); ct.fill();
+      const lit = Math.floor(state.blinkT / 12) % 5;
+      [-26, -13, 0, 13, 26].forEach((lx, li) => {
+        ct.fillStyle = li === lit ? '#FFD700' : '#444';
+        ct.beginPath(); ct.arc(ox + lx, sy + 10, 2.5, 0, Math.PI * 2); ct.fill();
+      });
+    });
+  }
+
+  if (z.type === 'planet') {
+    STARS.forEach(s => {
+      ct.fillStyle = `rgba(255,255,255,${0.3 + Math.sin(state.blinkT * 0.015 + s.phase) * 0.15})`; ct.beginPath(); ct.arc(s.x, s.y, s.r, 0, Math.PI * 2); ct.fill();
+    });
+    [
+      { bx: 90,  by: 90,  r: 54, col: '#8B3A20', ring: true,  ringCol: 'rgba(180,130,60,0.55)' },
+      { bx: 420, by: 70,  r: 38, col: '#204880', ring: false, ringCol: '' },
+      { bx: 560, by: 115, r: 28, col: '#1A6A30', ring: false, ringCol: '' },
+      { bx: 230, by: 130, r: 22, col: '#602880', ring: false, ringCol: '' },
+    ].forEach(p => {
+      const ox = ((p.bx - state.smoothCamX * 0.04) % (W + 300) + W + 300) % (W + 300) - 150;
+      ct.fillStyle = p.col; ct.beginPath(); ct.arc(ox, p.by, p.r, 0, Math.PI * 2); ct.fill();
+      ct.fillStyle = 'rgba(255,255,255,0.12)'; ct.beginPath(); ct.ellipse(ox - p.r * 0.28, p.by - p.r * 0.28, p.r * 0.42, p.r * 0.32, -0.5, 0, Math.PI * 2); ct.fill();
+      ct.fillStyle = 'rgba(0,0,0,0.28)'; ct.beginPath(); ct.ellipse(ox + p.r * 0.18, p.by + p.r * 0.12, p.r * 0.65, p.r * 0.75, 0.3, 0, Math.PI * 2); ct.fill();
+      if (p.ring) {
+        ct.save(); ct.strokeStyle = p.ringCol; ct.lineWidth = 9;
+        ct.beginPath(); ct.ellipse(ox, p.by, p.r * 1.75, p.r * 0.32, -0.18, 0, Math.PI * 2); ct.stroke();
+        ct.strokeStyle = 'rgba(140,100,40,0.3)'; ct.lineWidth = 5;
+        ct.beginPath(); ct.ellipse(ox, p.by, p.r * 2.1, p.r * 0.38, -0.18, 0, Math.PI * 2); ct.stroke();
+        ct.restore();
+      }
+    });
+  }
+
   if (Math.abs(state.windX) > 0.01) {
     ct.fillStyle = 'rgba(255,255,255,0.32)'; ct.font = '12px Arial'; ct.textAlign = 'center';
     ct.fillText(state.windX > 0 ? '▶▶ wind' : '◀◀ wind', W / 2, H - 8);

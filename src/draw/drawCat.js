@@ -86,6 +86,32 @@ export function drawGray(c, x, y, sc, dir, bl) {
   c.restore();
 }
 
+export function drawHelmet(c, catType) {
+  const isOrange = catType === 'orange';
+  const hx = isOrange ? 19 : 13;
+  const hy = isOrange ? -20 : -13;
+  const hr = isOrange ? 27 : 19;
+
+  // collar
+  c.fillStyle = '#B0B0C0';
+  c.beginPath(); c.ellipse(hx, hy + hr * 0.72, hr * 0.72, hr * 0.2, 0, 0, Math.PI * 2); c.fill();
+  c.strokeStyle = '#888898'; c.lineWidth = 1.5; c.stroke();
+
+  // glass dome
+  c.fillStyle = 'rgba(180,220,255,0.13)';
+  c.strokeStyle = 'rgba(160,215,255,0.8)';
+  c.lineWidth = 2.5;
+  c.beginPath(); c.arc(hx, hy, hr, 0, Math.PI * 2); c.fill(); c.stroke();
+
+  // main highlight
+  c.fillStyle = 'rgba(255,255,255,0.28)';
+  c.beginPath(); c.ellipse(hx - hr * 0.28, hy - hr * 0.3, hr * 0.28, hr * 0.2, -0.5, 0, Math.PI * 2); c.fill();
+
+  // side glint
+  c.fillStyle = 'rgba(255,255,255,0.12)';
+  c.beginPath(); c.ellipse(hx + hr * 0.42, hy + hr * 0.08, hr * 0.11, hr * 0.2, 0.3, 0, Math.PI * 2); c.fill();
+}
+
 export function drawCat(c, x, y, type, sc, dir, bl) {
   if (type === 'orange') drawOrange(c, x, y, sc, dir, bl);
   else drawGray(c, x, y, sc, dir, bl);

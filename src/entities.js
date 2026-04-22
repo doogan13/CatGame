@@ -15,4 +15,13 @@ export function mkItems() {
                : 'poop';
     state.items.push({ wx, wy, type, hit: false, onGnd, bob: Math.random() * Math.PI * 2, r2: type === 'poop' ? 14 : 12 });
   }
+
+  const extendedTypes = ['mouse', 'mouse', 'spring', 'spring', 'poop'];
+  for (let i = 0; i < 200; i++) {
+    const wx = 19000 + i * 160 + Math.random() * 80;
+    const onGnd = Math.random() > 0.5;
+    const wy = onGnd ? FL - 8 : 65 + Math.random() * (FL - 200);
+    const type = extendedTypes[Math.floor(Math.random() * extendedTypes.length)];
+    state.items.push({ wx, wy, type, hit: false, onGnd, bob: Math.random() * Math.PI * 2, r2: type === 'poop' ? 14 : 12 });
+  }
 }

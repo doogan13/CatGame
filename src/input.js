@@ -1,6 +1,6 @@
 import { state } from './state.js';
 import { doFire, beginRun } from './loop.js';
-import { openCatSelect, openShop, pickCat, setMsg, updBoosts, hideDoneBtn } from './ui.js';
+import { openCatSelect, openShop, pickCat, setMsg, updBoosts, hideDoneBtn, openLeaderboard, closeLeaderboard } from './ui.js';
 import { burst } from './physics.js';
 
 function onDown() {
@@ -44,6 +44,28 @@ export function initInput() {
     }
   });
 
+  function onJump(e) {
+    e.preventDefault();
+    if (state.gameState === 'flying' && state.onGround) {
+      state.pvy = -13;
+      state.pvx *= 1.05;
+      burst(state.px, state.py, '#FFE040', 14, 5);
+    }
+  }
+
+  function onTurbo(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    onDown();
+  }
+
+  const btnJump  = document.getElementById('btn-jump');
+  const btnTurbo = document.getElementById('btn-turbo');
+  btnJump.addEventListener('touchstart',  onJump,  { passive: false });
+  btnJump.addEventListener('mousedown',   onJump);
+  btnTurbo.addEventListener('touchstart', onTurbo, { passive: false });
+  btnTurbo.addEventListener('mousedown',  onTurbo);
+
   document.getElementById('done-relaunch').addEventListener('click', () => {
     hideDoneBtn(); cancelAnimationFrame(state.raf); beginRun();
   });
@@ -56,4 +78,6 @@ export function initInput() {
 
   document.getElementById('btnTT').addEventListener('click', () => pickCat('orange', beginRun));
   document.getElementById('btnHF').addEventListener('click', () => pickCat('gray',   beginRun));
+  document.getElementById('done-lb-btn').addEventListener('click', openLeaderboard);
+  document.getElementById('lb-close').addEventListener('click', closeLeaderboard);
 }
