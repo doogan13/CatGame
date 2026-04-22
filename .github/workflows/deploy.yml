@@ -31,7 +31,9 @@ jobs:
       - name: Install butler
         run: |
           BUTLER_URL=$(curl -sL https://api.github.com/repos/itchio/butler/releases/latest | grep "browser_download_url" | grep "linux-amd64" | grep -v "sha256" | cut -d'"' -f4)
-          curl -L -o butler "$BUTLER_URL"
+          curl -L -o butler.zip "$BUTLER_URL"
+          unzip butler.zip
+          mv linux-amd64/butler ./butler
           chmod +x butler
 
       - name: Push to itch.io
