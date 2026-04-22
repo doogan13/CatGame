@@ -108,7 +108,7 @@ export function drawGround(ct) {
   if (z.type === 'meadow') {
     ct.fillStyle = rgbStr(lerpColor(state.curGnd, { r:255, g:255, b:255 }, 0.2));
     for (let g = 0; g < 26; g++) {
-      const gx = (g * 107 + Math.floor(state.smoothCamX / 34) * 34) % (W + 60) - 30;
+      const gx = ((g * 400 - state.smoothCamX) % (W + 60) + W + 60) % (W + 60) - 30;
       ct.beginPath(); ct.moveTo(gx, FL); ct.quadraticCurveTo(gx + 3, FL - 14, gx + 6, FL); ct.fill();
       ct.beginPath(); ct.moveTo(gx + 8, FL); ct.quadraticCurveTo(gx + 11, FL - 10, gx + 14, FL); ct.fill();
     }

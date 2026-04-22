@@ -18,7 +18,10 @@ export function updHUD() {
     document.getElementById('spd-pill').style.display = '';
     document.getElementById('hspd').textContent = mph;
     const t = Math.min(1, mph / 180);
-    document.getElementById('hspd').style.color = `rgb(255,${Math.round(255 * (1 - t * 0.85))},${Math.round(255 * (1 - t))})`;
+    const col = `rgb(255,${Math.round(255 * (1 - t * 0.85))},${Math.round(255 * (1 - t))})`;
+    document.getElementById('hspd').style.color = col;
+    document.getElementById('spd-bar').style.width = (t * 100) + '%';
+    document.getElementById('spd-bar').style.background = col;
   } else {
     document.getElementById('spd-pill').style.display = 'none';
     state.displaySpeed = 0;
@@ -31,6 +34,7 @@ export function updBoosts() {
   for (let i = 0; i < boostMax(); i++) {
     const d = document.createElement('div');
     d.className = 'bp' + (i < state.boostLeft ? ' on' : '');
+    d.textContent = 'TURBO';
     bar.appendChild(d);
   }
 }

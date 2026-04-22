@@ -58,13 +58,21 @@ export function drawItems(ct) {
       ct.strokeStyle = '#A87800'; ct.lineWidth = 2; ct.stroke();
       ct.fillStyle = '#7A5000'; ct.font = 'bold 10px Arial'; ct.textAlign = 'center';
       ct.fillText('$', sx, sy + 4); ct.textAlign = 'left';
-    } else if (it.type === 'bat') {
-      ct.save(); ct.translate(sx, sy); ct.rotate(Math.sin(itemT * 0.005 + it.bob) * 0.35);
-      ct.fillStyle = '#602080'; ct.beginPath(); ct.ellipse(0, 0, 13, 8, 0, 0, Math.PI * 2); ct.fill();
-      ct.fillStyle = '#8030B0'; ct.beginPath();
-      ct.moveTo(-18, 3); ct.bezierCurveTo(-22, -9, -8, -14, 0, -4);
-      ct.bezierCurveTo(8, -14, 22, -9, 18, 3); ct.closePath(); ct.fill();
-      ct.fillStyle = '#FF9090'; ct.beginPath(); ct.ellipse(0, -2, 4, 5, 0, 0, Math.PI * 2); ct.fill();
+    } else if (it.type === 'bird') {
+      const flap = Math.sin(itemT * 0.014 + it.bob) * 0.55;
+      ct.save(); ct.translate(sx, sy);
+      ct.fillStyle = '#5AAAF0';
+      ct.save(); ct.rotate(flap);
+      ct.beginPath(); ct.moveTo(0, 0); ct.bezierCurveTo(-5, -11, -18, -9, -19, 0); ct.bezierCurveTo(-16, 5, -5, 4, 0, 2); ct.closePath(); ct.fill();
+      ct.restore();
+      ct.save(); ct.scale(-1, 1); ct.rotate(flap);
+      ct.beginPath(); ct.moveTo(0, 0); ct.bezierCurveTo(-5, -11, -18, -9, -19, 0); ct.bezierCurveTo(-16, 5, -5, 4, 0, 2); ct.closePath(); ct.fill();
+      ct.restore();
+      ct.fillStyle = '#2860B0'; ct.beginPath(); ct.moveTo(-8, 3); ct.lineTo(-18, 8); ct.lineTo(-11, 1); ct.closePath(); ct.fill();
+      ct.fillStyle = '#3A80D0'; ct.beginPath(); ct.ellipse(0, 0, 10, 7, 0, 0, Math.PI * 2); ct.fill();
+      ct.fillStyle = '#FFB020'; ct.beginPath(); ct.moveTo(9, -1); ct.lineTo(17, 1); ct.lineTo(9, 3); ct.closePath(); ct.fill();
+      ct.fillStyle = '#111'; ct.beginPath(); ct.arc(5, -2, 2, 0, Math.PI * 2); ct.fill();
+      ct.fillStyle = '#fff'; ct.beginPath(); ct.arc(5.7, -2.5, 0.7, 0, Math.PI * 2); ct.fill();
       ct.restore();
     } else if (it.type === 'mouse') {
       drawMouse(ct, sx, sy, itemT + it.bob * 1000);

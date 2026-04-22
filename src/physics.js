@@ -50,9 +50,9 @@ export function physics(updHUD, showDoneBtn) {
       if (it.type === 'coin') {
         state.coins++;
         burst(it.wx, it.wy, '#FFD700', 7, 3);
-      } else if (it.type === 'bat') {
+      } else if (it.type === 'bird') {
         state.pvy -= 3.5;
-        burst(it.wx, it.wy, '#9030C0', 9, 3.5);
+        burst(it.wx, it.wy, '#60B0FF', 9, 3.5);
       } else if (it.type === 'mouse') {
         state.pvx = Math.min(state.pvx + 5, 20);
         state.pvy -= 1.5;
@@ -71,7 +71,7 @@ export function physics(updHUD, showDoneBtn) {
     }
   });
 
-  const fl = FL - cr;
+  const fl = FL - cr + 6;
   if (state.py >= fl) {
     state.py = fl;
     state.onGround = true;
