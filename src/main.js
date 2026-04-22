@@ -9,7 +9,10 @@ const cv = document.getElementById('c');
 const wrap = document.getElementById('wrap');
 
 function scaleToWindow() {
-  const scale = Math.min(window.innerWidth / GAME_W, window.innerHeight / GAME_H);
+  const vp = window.visualViewport;
+  const vw = vp ? vp.width : window.innerWidth;
+  const vh = vp ? vp.height : window.innerHeight;
+  const scale = Math.min(vw / GAME_W, vh / GAME_H);
   const dpr = window.devicePixelRatio || 1;
   state.renderScale = scale * dpr;
   cv.width  = Math.round(GAME_W * state.renderScale);
@@ -21,7 +24,12 @@ function scaleToWindow() {
 }
 scaleToWindow();
 window.addEventListener('resize', scaleToWindow);
-window.addEventListener('orientationchange', () => setTimeout(scaleToWindow, 100));
+if (window.visualViewport) window.visualViewport.addEventListener('resize', scaleToWindow);
+window.addEventListener('orientationchange', () => {
+  setTimeout(scaleToWindow, 100);
+  setTimeout(scaleToWindow, 350);
+  setTimeout(scaleToWindow, 700);
+});
 
 document.getElementById('fs-btn').addEventListener('click', () => {
   const el = document.documentElement;
