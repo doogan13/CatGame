@@ -20,9 +20,9 @@ export function showEventMsg(label, good) {
   _msgTimer = setTimeout(() => el.style.opacity = '0', 2200);
 }
 
-export function tickEvents() {
+export function tickEvents(dts = 1) {
   if (state.gameState !== 'flying') return;
-  state.nextEventT--;
+  state.nextEventT -= dts;
   if (state.nextEventT <= 0) {
     state.nextEventT = 280 + Math.floor(Math.random() * 320);
     if (Math.random() < 0.5) {
@@ -33,15 +33,15 @@ export function tickEvents() {
   }
 }
 
-export function applyEvent() {
+export function applyEvent(dts = 1) {
   if (!state.eventActive) return;
   const ev = state.eventActive;
-  if (ev.type === 'gust')      state.pvx = Math.min(state.pvx + 0.14, 22);
-  if (ev.type === 'updraft')   state.pvy -= 0.17;
-  if (ev.type === 'birdflock') { state.pvx = Math.min(state.pvx + 0.09, 22); state.pvy -= 0.07; }
-  if (ev.type === 'downdraft') state.pvy += 0.24;
-  if (ev.type === 'headwind')  state.pvx *= 0.982;
-  if (ev.type === 'heavyair')  { state.pvx *= 0.977; state.pvy += 0.08; }
-  ev.t--;
+  if (ev.type === 'gust')      state.pvx = Math.min(state.pvx + 0.14 * dts, 22);
+  if (ev.type === 'updraft')   state.pvy -= 0.17 * dts;
+  if (ev.type === 'birdflock') { state.pvx = Math.min(state.pvx + 0.09 * dts, 22); state.pvy -= 0.07 * dts; }
+  if (ev.type === 'downdraft') state.pvy += 0.24 * dts;
+  if (ev.type === 'headwind')  state.pvx *= Math.pow(0.982, dts);
+  if (ev.type === 'heavyair')  { state.pvx *= Math.pow(0.977, dts); state.pvy += 0.08 * dts; }
+  ev.t -= dts;
   if (ev.t <= 0) state.eventActive = null;
 }

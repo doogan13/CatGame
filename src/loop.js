@@ -17,7 +17,10 @@ import { drawItems, drawSparks } from './draw/drawItems.js';
 const cv = document.getElementById('c');
 const ct = cv.getContext('2d');
 
+let _lastTs = 0;
+
 export function beginRun() {
+  _lastTs = 0;
   state.gameState = 'aim';
   state.phase = 'angle';
   state.rampAngle = RAMP_MIN;
@@ -60,26 +63,30 @@ export function doFire() {
   state.phase = 'launching';
 }
 
-export function loop() {
-  state.blinkT++;
+export function loop(ts) {
+  const dt = _lastTs ? Math.min(ts - _lastTs, 66) : 1000 / 60;
+  _lastTs = ts;
+  const dts = dt / (1000 / 60); // 1.0 at 60fps, 2.0 at 120fps
+
+  state.blinkT += dts;
   ct.setTransform(state.renderScale, 0, 0, state.renderScale, 0, 0);
 
   if (state.gameState === 'aim') {
     if (state.phase === 'angle') {
-      state.rampAngle += RAMP_SPEED * state.rampDir;
+      state.rampAngle += RAMP_SPEED * state.rampDir * dts;
       if (state.rampAngle >= RAMP_MAX) { state.rampAngle = RAMP_MAX; state.rampDir = -1; }
       if (state.rampAngle <= RAMP_MIN) { state.rampAngle = RAMP_MIN; state.rampDir = 1; }
     }
     if (state.phase === 'power') {
-      state.powVal += POW_SPEED * state.powDir;
+      state.powVal += POW_SPEED * state.powDir * dts;
       if (state.powVal >= 1) { state.powVal = 1; state.powDir = -1; }
       if (state.powVal <= 0) { state.powVal = 0; state.powDir = 1; }
     }
     if (state.phase === 'launching') {
       const ms = 0.022 + state.powVal * 0.018;
-      state.sledV += 0.0006;
+      state.sledV += 0.0006 * dts;
       if (state.sledV > ms) state.sledV = ms;
-      state.sledT += state.sledV;
+      state.sledT += state.sledV * dts;
       const sp = getSledPos(Math.min(state.sledT, 1.0));
       if (state.sledT > 0.2) burst(sp.x, sp.y, '#FF8000', 2, 1.5 + state.sledV * 30);
       if (state.sledT >= 1.0) {
@@ -102,8 +109,8 @@ export function loop() {
     }
   }
 
-  tickEvents();
-  physics(updHUD, showDoneBtn);
+  tickEvents(dts);
+  physics(updHUD, showDoneBtn, dts);
 
   ct.clearRect(0, 0, W, H);
   drawBG(ct);

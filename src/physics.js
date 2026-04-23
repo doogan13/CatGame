@@ -26,25 +26,26 @@ export function addTrail() {
   if (state.trails.length > 30) state.trails.shift();
 }
 
-function applyZoneHazards(burst) {
+function applyZoneHazards(burst, dts) {
   if (state.gameState !== 'flying') return;
-  state.zoneHazardT++;
+  const prev = state.zoneHazardT;
+  state.zoneHazardT += dts;
   const zType = ZONES[state.currentZone]?.type;
 
-  if (zType === 'desert' && state.zoneHazardT % 200 === 0 && Math.random() < 0.65) {
+  if (zType === 'desert' && Math.floor(state.zoneHazardT / 200) > Math.floor(prev / 200) && Math.random() < 0.65) {
     state.pvy -= 4 + Math.random() * 2;
     burst(state.px, state.py, '#FF9900', 6, 2);
     showEventMsg('Hot Air!', true);
   }
   if (zType === 'arctic' && state.onGround) {
-    state.pvx += 0.14;
+    state.pvx += 0.14 * dts;
   }
-  if (zType === 'night' && state.zoneHazardT % 230 === 0 && Math.random() < 0.55) {
+  if (zType === 'night' && Math.floor(state.zoneHazardT / 230) > Math.floor(prev / 230) && Math.random() < 0.55) {
     state.pvx += 3 + Math.random() * 2;
     burst(state.px, state.py, '#FFFFC0', 8, 3);
     showEventMsg('Shooting Star!', true);
   }
-  if (zType === 'storm' && state.zoneHazardT % 160 === 0) {
+  if (zType === 'storm' && Math.floor(state.zoneHazardT / 160) > Math.floor(prev / 160)) {
     state.pvx += (Math.random() - 0.35) * 5;
     state.pvy -= Math.random() * 2;
     burst(state.px, state.py, '#FFFF80', 6, 2.5);
@@ -53,27 +54,27 @@ function applyZoneHazards(burst) {
 }
 
 // updHUD and showDoneBtn are passed as callbacks to avoid circular imports
-export function physics(updHUD, showDoneBtn) {
+export function physics(updHUD, showDoneBtn, dts = 1) {
   if (state.gameState !== 'flying') return;
 
-  applyEvent();
-  applyZoneHazards(burst);
+  applyEvent(dts);
+  applyZoneHazards(burst, dts);
 
-  state.pvx += state.windX * 0.4;
-  state.px += state.pvx;
-  state.py += state.pvy;
+  state.pvx += state.windX * 0.4 * dts;
+  state.px += state.pvx * dts;
+  state.py += state.pvy * dts;
 
   const zType = ZONES[state.currentZone]?.type;
   let grav = zType === 'space' ? 0.16 : 0.31;
   if (state.gliderT > 0) {
     const fade = Math.min(1, state.gliderT / 90);
     grav -= fade * 0.22;
-    state.gliderT--;
-    if (state.gliderT === 0) burst(state.px, state.py, '#A0D8FF', 14, 4);
+    state.gliderT -= dts;
+    if (state.gliderT <= 0) { state.gliderT = 0; burst(state.px, state.py, '#A0D8FF', 14, 4); }
   }
-  state.pvy += grav;
-  state.pvx *= glide();
-  if (Math.abs(state.pvx) > 22) state.pvx *= 0.975;
+  state.pvy += grav * dts;
+  state.pvx *= Math.pow(glide(), dts);
+  if (Math.abs(state.pvx) > 22) state.pvx *= Math.pow(0.975, dts);
 
   const mr = magR(), cr = catR();
   state.items.forEach(it => {
@@ -127,7 +128,7 @@ export function physics(updHUD, showDoneBtn) {
 
   const targetCamX = Math.max(0, state.px - W * 0.3);
   state.camX = targetCamX;
-  state.smoothCamX += (state.camX - state.smoothCamX) * 0.08;
+  state.smoothCamX += (state.camX - state.smoothCamX) * 0.08 * dts;
 
   state.runDist = Math.max(0, Math.round((state.px - RAMP_BASE_X) / 5));
   checkZone();
