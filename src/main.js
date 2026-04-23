@@ -9,27 +9,29 @@ const cv = document.getElementById('c');
 const wrap = document.getElementById('wrap');
 
 function scaleToWindow() {
-  const vw = window.innerWidth;
-  const vh = window.innerHeight;
+  const vp = window.visualViewport;
+  const vw = vp ? vp.width  : document.documentElement.clientWidth;
+  const vh = vp ? vp.height : document.documentElement.clientHeight;
   const scale = Math.min(vw / GAME_W, vh / GAME_H);
   const dpr = window.devicePixelRatio || 1;
-  const cssW = Math.round(GAME_W * scale);
-  const cssH = Math.round(GAME_H * scale);
-  cv.style.width  = cssW + 'px';
-  cv.style.height = cssH + 'px';
-  cv.width  = Math.round(cssW * dpr);
-  cv.height = Math.round(cssH * dpr);
-  state.renderScale = scale * dpr;
-  wrap.style.transform = '';
+  cv.width  = Math.round(GAME_W * dpr);
+  cv.height = Math.round(GAME_H * dpr);
+  cv.style.width  = GAME_W + 'px';
+  cv.style.height = GAME_H + 'px';
+  state.renderScale = dpr;
+  const x = (vw - GAME_W * scale) / 2;
+  const y = (vh - GAME_H * scale) / 2;
+  wrap.style.transform = `translate(${x}px,${y}px) scale(${scale})`;
   renderCatPreviews();
 }
 scaleToWindow();
-if (window.ResizeObserver) {
-  new ResizeObserver(scaleToWindow).observe(document.body);
-} else {
-  window.addEventListener('resize', scaleToWindow);
-  window.addEventListener('orientationchange', () => setTimeout(scaleToWindow, 300));
-}
+if (window.ResizeObserver) new ResizeObserver(scaleToWindow).observe(document.documentElement);
+window.addEventListener('resize', scaleToWindow);
+if (window.visualViewport) window.visualViewport.addEventListener('resize', scaleToWindow);
+window.addEventListener('orientationchange', () => {
+  setTimeout(scaleToWindow, 50);
+  setTimeout(scaleToWindow, 300);
+});
 
 document.getElementById('fs-btn').addEventListener('click', () => {
   const el = document.documentElement;
