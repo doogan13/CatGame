@@ -36,12 +36,12 @@ export function tickEvents(dts = 1) {
 export function applyEvent(dts = 1) {
   if (!state.eventActive) return;
   const ev = state.eventActive;
-  if (ev.type === 'gust')      state.pvx = Math.min(state.pvx + 0.14 * dts, 22);
-  if (ev.type === 'updraft')   state.pvy -= 0.17 * dts;
-  if (ev.type === 'birdflock') { state.pvx = Math.min(state.pvx + 0.09 * dts, 22); state.pvy -= 0.07 * dts; }
-  if (ev.type === 'downdraft') state.pvy += 0.24 * dts;
-  if (ev.type === 'headwind')  state.pvx *= Math.pow(0.982, dts);
-  if (ev.type === 'heavyair')  { state.pvx *= Math.pow(0.977, dts); state.pvy += 0.08 * dts; }
+  if (ev.type === 'gust')      state.pvx = Math.min(state.pvx + 0.06 * dts, 22);
+  if (ev.type === 'updraft')   state.pvy -= 0.07 * dts;
+  if (ev.type === 'birdflock') { state.pvx = Math.min(state.pvx + 0.04 * dts, 22); state.pvy -= 0.03 * dts; }
+  if (ev.type === 'downdraft') state.pvy += 0.10 * dts;
+  if (ev.type === 'headwind')  state.pvx *= Math.pow(0.988, dts);
+  if (ev.type === 'heavyair')  { state.pvx *= Math.pow(0.983, dts); state.pvy += 0.04 * dts; }
   ev.t -= dts;
   if (ev.t <= 0) state.eventActive = null;
 }

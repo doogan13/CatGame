@@ -74,7 +74,8 @@ export function hideDoneBtn() {
 
 export function openCatSelect(mode) {
   state.selMode = mode;
-  document.getElementById('sel-title').textContent = mode === 'swap' ? 'Swap Your Cat' : 'Choose Your Cat';
+  const titles = { swap: 'Swap Your Cat', shopsel: 'Change Your Cat' };
+  document.getElementById('sel-title').textContent = titles[mode] || 'Choose Your Cat';
   document.getElementById('sel').style.display = 'flex';
   state.gameState = 'select';
 }
@@ -105,6 +106,14 @@ export function initShop(beginRunFn) {
     document.getElementById('shop').style.display = 'none';
     beginRunFn();
   });
+  document.getElementById('shop-cat-btn').addEventListener('click', () => {
+    document.getElementById('shop').style.display = 'none';
+    openCatSelect('shopsel');
+  });
+  wireNewGameBtn(document.getElementById('shop-newgame-btn'), () => {
+    updHUD();
+    openShop();
+  });
 }
 
 export function pickCat(type, beginRunFn) {
@@ -114,8 +123,7 @@ export function pickCat(type, beginRunFn) {
   else openShop();
 }
 
-export function initNewGameBtn() {
-  const btn = document.getElementById('new-game-btn');
+function wireNewGameBtn(btn, afterReset) {
   let confirming = false;
   let timer = null;
   btn.addEventListener('click', () => {
@@ -138,9 +146,13 @@ export function initNewGameBtn() {
       UPS.forEach(u => u.val = 0);
       localStorage.removeItem('catgame_helmet_orange');
       localStorage.removeItem('catgame_helmet_gray');
-      updHUD();
+      afterReset();
     }
   });
+}
+
+export function initNewGameBtn() {
+  wireNewGameBtn(document.getElementById('new-game-btn'), updHUD);
 }
 
 export function initNameInput() {

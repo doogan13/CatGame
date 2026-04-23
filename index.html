@@ -78,6 +78,12 @@ canvas{display:block;}
 .ucard.maxed .uv{color:#80FF90;}
 #goBtn{background:#8870EE;border:none;color:#fff;font-size:18px;font-weight:700;border-radius:12px;padding:14px 48px;cursor:pointer;font-family:Arial,sans-serif;}
 #goBtn:hover{background:#AA99FF;}
+#shop-extra{display:flex;gap:16px;align-items:center;}
+#shop-cat-btn{background:rgba(255,255,255,0.08);border:1.5px solid rgba(255,255,255,0.25);color:#fff;font-size:14px;border-radius:10px;padding:8px 20px;cursor:pointer;font-family:Arial,sans-serif;}
+#shop-cat-btn:hover{background:rgba(255,255,255,0.16);}
+#shop-newgame-btn{border:none;background:none;color:#aaa;font-size:12px;cursor:pointer;padding:4px 10px;border-radius:8px;font-family:Arial,sans-serif;}
+#shop-newgame-btn:hover{color:#e05050;background:rgba(220,80,80,0.08);}
+#shop-newgame-btn.confirm{color:#e05050;font-weight:700;}
 </style>
 </head>
 <body>
@@ -137,6 +143,10 @@ canvas{display:block;}
     <div id="scoin">Coins: 0</div>
     <div class="ugrid" id="ugrid"></div>
     <button id="goBtn">Launch!</button>
+    <div id="shop-extra">
+      <button id="shop-cat-btn">Change Cat</button>
+      <button id="shop-newgame-btn">New Game</button>
+    </div>
   </div>
 </div>
 <script type="module" src="/src/main.js"></script>

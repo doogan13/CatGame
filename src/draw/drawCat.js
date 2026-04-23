@@ -86,11 +86,14 @@ export function drawGray(c, x, y, sc, dir, bl) {
   c.restore();
 }
 
-export function drawHelmet(c, catType) {
+export function drawHelmet(c, catType, dir = 1) {
   const isOrange = catType === 'orange';
   const hx = isOrange ? 19 : 13;
   const hy = isOrange ? -20 : -13;
   const hr = isOrange ? 27 : 19;
+
+  c.save();
+  c.scale(dir, 1);
 
   // collar
   c.fillStyle = '#B0B0C0';
@@ -110,6 +113,8 @@ export function drawHelmet(c, catType) {
   // side glint
   c.fillStyle = 'rgba(255,255,255,0.12)';
   c.beginPath(); c.ellipse(hx + hr * 0.42, hy + hr * 0.08, hr * 0.11, hr * 0.2, 0.3, 0, Math.PI * 2); c.fill();
+
+  c.restore();
 }
 
 export function drawCat(c, x, y, type, sc, dir, bl) {

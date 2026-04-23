@@ -34,23 +34,24 @@ export function initInput() {
   cv.addEventListener('touchstart', e => { e.preventDefault(); onDown(); }, { passive: false });
   cv.addEventListener('touchend',   e => { e.preventDefault(); onUp();   }, { passive: false });
 
-  document.addEventListener('keydown', e => {
-    if (e.code !== 'Space') return;
-    e.preventDefault();
-    if (state.gameState === 'flying' && state.onGround) {
+  function doJump() {
+    if (state.gameState === 'flying' && (state.onGround || state.coyoteT > 0)) {
+      state.coyoteT = 0;
       state.pvy = -13;
       state.pvx *= 1.05;
       burst(state.px, state.py, '#FFE040', 14, 5);
     }
+  }
+
+  document.addEventListener('keydown', e => {
+    if (e.code !== 'Space') return;
+    e.preventDefault();
+    doJump();
   });
 
   function onJump(e) {
     e.preventDefault();
-    if (state.gameState === 'flying' && state.onGround) {
-      state.pvy = -13;
-      state.pvx *= 1.05;
-      burst(state.px, state.py, '#FFE040', 14, 5);
-    }
+    doJump();
   }
 
   function onTurbo(e) {

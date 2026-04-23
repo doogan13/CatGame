@@ -38,7 +38,7 @@ function applyZoneHazards(burst, dts) {
     showEventMsg('Hot Air!', true);
   }
   if (zType === 'arctic' && state.onGround) {
-    state.pvx += 0.14 * dts;
+    state.pvx += 0.035 * dts;
   }
   if (zType === 'night' && Math.floor(state.zoneHazardT / 230) > Math.floor(prev / 230) && Math.random() < 0.55) {
     state.pvx += 3 + Math.random() * 2;
@@ -102,8 +102,8 @@ export function physics(updHUD, showDoneBtn, dts = 1) {
         state.pvy = -8;
         burst(it.wx, it.wy, '#40A0E0', 10, 4);
       } else if (it.type === 'poop') {
-        state.pvx *= 0.5;
-        state.pvy += 3;
+        state.pvx *= 0.25;
+        state.pvy += 5;
         burst(it.wx, it.wy, '#6B4526', 8, 2);
         burst(it.wx, it.wy, '#A0A000', 6, 2.5);
       }
@@ -115,6 +115,7 @@ export function physics(updHUD, showDoneBtn, dts = 1) {
   if (state.py >= fl) {
     state.py = fl;
     state.onGround = true;
+    state.coyoteT = 12;
     if (Math.abs(state.pvy) > 2) {
       state.pvy = -Math.abs(state.pvy) * bounceR();
       state.pvx *= 0.76;
@@ -124,6 +125,7 @@ export function physics(updHUD, showDoneBtn, dts = 1) {
     }
   } else {
     state.onGround = false;
+    if (state.coyoteT > 0) state.coyoteT = Math.max(0, state.coyoteT - dts);
   }
 
   const targetCamX = Math.max(0, state.px - W * 0.3);

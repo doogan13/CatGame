@@ -15,6 +15,7 @@ export const state = {
   px: 0, py: 0, pvx: 0, pvy: 0,
   camX: 0, smoothCamX: 0,
   onGround: false,
+  coyoteT: 0,
 
   // animation timers
   blinkT: 0,

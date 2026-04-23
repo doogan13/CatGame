@@ -36,6 +36,7 @@ export function beginRun() {
   state.trails = [];
   state.blinkT = 0;
   state.onGround = false;
+  state.coyoteT = 0;
   state.currentZone = 0;
   state.windX = 0;
   state.windTarget = 0;
@@ -152,7 +153,7 @@ export function loop(ts) {
       state.catType === 'orange' ? 0.9 : 0.68,
       state.pvx > 0.1 ? 1 : -1,
       state.blinkT % 130 < 4);
-    if (helmetUnlocked(state.catType)) drawHelmet(ct, state.catType);
+    if (helmetUnlocked(state.catType)) drawHelmet(ct, state.catType, state.pvx > 0.1 ? 1 : -1);
     ct.restore();
   }
 
