@@ -33,15 +33,6 @@ window.addEventListener('orientationchange', () => {
   setTimeout(scaleToWindow, 300);
 });
 
-document.getElementById('fs-btn').addEventListener('click', () => {
-  const el = document.documentElement;
-  if (!document.fullscreenElement) {
-    (el.requestFullscreen || el.webkitRequestFullscreen || el.mozRequestFullscreen).call(el);
-  } else {
-    (document.exitFullscreen || document.webkitExitFullscreen || document.mozExitFullscreen).call(document);
-  }
-});
-
 // Initialize zone colors (hexToRgb lives in colors.js so can't be done at state.js parse time)
 state.curSky = hexToRgb(ZONES[0].sky);
 state.curGnd = hexToRgb(ZONES[0].gnd);
