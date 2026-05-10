@@ -24,8 +24,8 @@ export function tickEvents(dts = 1) {
   if (state.gameState !== 'flying') return;
   state.nextEventT -= dts;
   if (state.nextEventT <= 0) {
-    state.nextEventT = 280 + Math.floor(Math.random() * 320);
-    if (Math.random() < 0.5) {
+    state.nextEventT = 450 + Math.floor(Math.random() * 400);
+    if (Math.random() < 0.3) {
       const ev = EVENTS[Math.floor(Math.random() * EVENTS.length)];
       state.eventActive = { type: ev.type, t: ev.dur };
       showEventMsg(ev.label, ev.good);

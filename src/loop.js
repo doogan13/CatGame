@@ -102,7 +102,7 @@ export function loop(ts) {
         state.gliderT = gliderTime();
         burst(tip.x, tip.y, '#FFE040', 28, 8);
         burst(tip.x, tip.y, '#FF6000', 16, 6);
-        setMsg('Click To Boost · Space To Ground Smash!');
+        setMsg('Click To Boost · Space To Jump!');
         updBoosts();
         state.raf = requestAnimationFrame(loop);
         return;

@@ -49,7 +49,13 @@ function applyZoneHazards(burst, dts) {
     state.pvx += (Math.random() - 0.35) * 5;
     state.pvy -= Math.random() * 2;
     burst(state.px, state.py, '#FFFF80', 6, 2.5);
-    showEventMsg('Lightning!', Math.random() < 0.5);
+    if (Math.random() < 0.01) {
+      state.instantKill = true;
+      burst(state.px, state.py, '#FFFFFF', 30, 12);
+      showEventMsg('STRUCK BY LIGHTNING!', false);
+    } else {
+      showEventMsg('Lightning!', Math.random() < 0.5);
+    }
   }
 }
 
@@ -59,6 +65,16 @@ export function physics(updHUD, showDoneBtn, dts = 1) {
 
   applyEvent(dts);
   applyZoneHazards(burst, dts);
+
+  if (state.instantKill) {
+    state.instantKill = false;
+    state.gameState = 'done';
+    if (state.runDist > state.best) state.best = state.runDist;
+    state.coins += Math.floor(state.runDist / 8);
+    updHUD();
+    showDoneBtn();
+    return;
+  }
 
   state.pvx += state.windX * 0.4 * dts;
   state.px += state.pvx * dts;
@@ -91,18 +107,18 @@ export function physics(updHUD, showDoneBtn, dts = 1) {
         state.coins++;
         burst(it.wx, it.wy, '#FFD700', 7, 3);
       } else if (it.type === 'bird') {
-        state.pvy -= 3.5;
+        state.pvy -= 2;
         burst(it.wx, it.wy, '#60B0FF', 9, 3.5);
       } else if (it.type === 'mouse') {
-        state.pvx = Math.min(state.pvx + 5, 20);
+        state.pvx = Math.min(state.pvx + 2, 20);
         state.pvy -= 1.5;
         burst(it.wx, it.wy, '#FFD840', 10, 4);
         burst(it.wx, it.wy, '#C0C0C8', 8, 3);
       } else if (it.type === 'spring') {
-        state.pvy = -8;
+        state.pvy = -5;
         burst(it.wx, it.wy, '#40A0E0', 10, 4);
       } else if (it.type === 'poop') {
-        state.pvx *= 0.25;
+        state.pvx *= 0.12;
         state.pvy += 5;
         burst(it.wx, it.wy, '#6B4526', 8, 2);
         burst(it.wx, it.wy, '#A0A000', 6, 2.5);
@@ -118,7 +134,7 @@ export function physics(updHUD, showDoneBtn, dts = 1) {
     state.coyoteT = 12;
     if (Math.abs(state.pvy) > 2) {
       state.pvy = -Math.abs(state.pvy) * bounceR();
-      state.pvx *= 0.76;
+      state.pvx *= 0.68;
       burst(state.px, state.py, '#70C030', 6, 2.5);
     } else {
       state.pvy = 0;
@@ -127,6 +143,8 @@ export function physics(updHUD, showDoneBtn, dts = 1) {
     state.onGround = false;
     if (state.coyoteT > 0) state.coyoteT = Math.max(0, state.coyoteT - dts);
   }
+
+  state.pvx = Math.max(0, state.pvx);
 
   const targetCamX = Math.max(0, state.px - W * 0.3);
   state.camX = targetCamX;
